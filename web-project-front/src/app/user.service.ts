@@ -1,9 +1,19 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
+
+export interface Profile {
+
+}
+
 export class UserService {
 
-  constructor() { }
+  constructor(private http : HttpClient) { }
+  
+  getUserProfile() {
+  
+  }
 }
