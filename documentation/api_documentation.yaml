@@ -1,0 +1,252 @@
+openapi: 3.0.0
+info:
+  title: "Documentation API projet web"
+  version: "0.1"
+servers:
+  - url: http://localhost:{port}/
+    variables:
+      port:
+        default: '8000'
+
+paths:
+  /login:
+    post:
+      summary: "Authentifie l'utilisateur à partir de son ID et mot de passe."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Credentials"
+                  
+      responses:
+        '200':
+          description: "Authentification réussie"
+        '401':
+          description: "ID ou mot de passe invalide"
+        '404':
+          description: "Mauvais format de requête"
+  /register:
+    post:
+      summary: "Créé un compte à partir d'un nom d'utilisateur et d'un mot de passe"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                password:
+                  type: string
+              required:
+                - firstname
+                - password
+
+      responses:
+        '200':
+          description: "Authentification réussie"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1234567
+        '404':
+          description: "Mauvais format de requête"
+
+  /logout:
+    get:
+      summary: "Efface le jeton de session de l'utilisateur"
+      responses:
+        '200':
+          description: "Le jeton de session de l'utilisateur est effacé par le serveur"
+        '401':
+          description: "L'utilisateur ne possède pas de jeton de session valide"
+
+  /transactions:
+    get:
+      summary: "Retourne l'ensemble des transactions recues ou effectuées"
+      responses:
+        '200':
+          description: "Retourne la liste de résumés de transactions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionSumary"
+
+  /profile:
+    get:
+      summary: "Retourne les informations du compte utilisateur"
+      responses:
+        '200':
+          description: "Retourne la liste de résumés de transactions"
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Profile"
+        '401':
+          description: "L'utilisateur ne possède pas de jeton de session valide"
+
+  /details/{id}:
+    get:
+      summary: "Retourne les détails d'une transaction"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "integer"
+      responses:
+        '200':
+          description: "Retourne les détails de la transaction"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionDetails"
+        '401':
+          description: "L'utilisateur ne possède pas de jeton de session valide"
+        '404':
+          description: "La transaction n'existe pas ou l'utilisateur n'y a pas pris part"
+
+  /edit/{id}:
+    put:
+      summary: "Editer le commentaire associé à une transaction"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+              required:
+                - comment
+      responses:
+        '200':
+          description: "La modification est validée"
+        '401':
+          description: "L'utilisateur ne possède pas de jeton de session valide"
+        '404':
+          description: "La transaction n'existe pas ou l'utilisateur n'y a pas pris part"
+
+  /createTransaction:
+    post:
+      summary: "Effectuer une nouvelle transaction"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewTransaction"
+      responses:
+        '200':
+          description: "La transaction est faite"
+        '401':
+          description: "L'utilisateur ne possède pas de jeton de session valide"
+        '400':
+          description: "Le compte cible n'existe pas ou le montant n'est pas valide"
+
+  /delete/{id}:
+    delete:
+      summary: "Supprimer une transaction"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "integer"
+      responses:
+        '200':
+          description: "La suppression est validée"
+        '401':
+          description: "L'utilisateur ne possède pas de jeton de session valide"
+        '404':
+          description: "La transaction n'existe pas ou l'utilisateur n'y a pas pris part"
+
+components:
+  schemas:
+    Credentials:
+      type: object
+      properties:
+        uid:
+          type: integer
+          example: 1234567
+        password:
+          type: string
+          example: "password"
+      required:
+        - uid
+        - password
+
+    TransactionSumary:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: integer
+        hasSent:
+          type: boolean
+      required:
+        - id
+        - amount
+        - hasSent
+
+    TransactionDetails:
+      type: object
+      properties:
+        sourceUid:
+          type: integer
+        destUid:
+          type: integer
+        amount:
+          type: integer
+        comment:
+          type: string
+      required:
+        - sourceUid
+        - destUid
+        - amount
+
+    Profile:
+      type: object
+      properties:
+        balance:
+          type: integer
+          example: 100
+        firstname:
+          type: string
+          example: "user01"
+      required:
+        - balance
+        - firstname
+
+    NewTransaction:
+      type: object
+      properties:
+        amount:
+          type: integer
+        destinationId:
+          type: integer
+        comment:
+          type: integer
+      required:
+        - amount
+        - destinationId
+        - comment
