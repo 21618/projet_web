@@ -10,6 +10,9 @@ const pbkdf2_salt = "PqhE5qHtD9gJaLvk"	//  mode to config
 const min_pass_len = 10
 const max_pass_len = 20
 
+/*
+User password stored in database is hashed with pbkdf2 algorithm
+*/
 hashPassword = async function(password) {
 	return new Promise((resolve, reject) => {
 		crypto.pbkdf2(password, pbkdf2_salt, 10000, 64, 'sha512', (err, derivedKey) => {
@@ -22,6 +25,11 @@ hashPassword = async function(password) {
 	})
 }
 
+/*
+Authentication requires 2 parameters : User ID and password
+If the request is successfull, the API will set a JWT in user cookies
+This token allows the user to use authenticated API calls such as transaction API
+*/
 exports.login = async function(req, res, next) {
 	var uid = req.body.uid
 	var password = req.body.password
@@ -59,14 +67,17 @@ exports.login = async function(req, res, next) {
 	})
 }
 
-/* Register expects firstname + password  */
+/*
+Register functionnality expects a firstname and password
+Password length must be contained between 10 and 20
+
+An ID will be generated for the authentication
+ID are unique and corresponds to the user's ID
+*/
 exports.register = async function(req, res, next) {
-	//  TODO: redirect to account if session
-	//  TODO: redirect if session
 	var firstname = req.body.firstname
 	var password = req.body.password
 	
-	//  TODO: strip firstname + length restrictions
 	if(!firstname || !password) {
 		return res.status(400).json({
 			"Bad request": "Username and password are required."
@@ -98,7 +109,7 @@ exports.register = async function(req, res, next) {
 	})
 }
 
-/* returns firstname and balance, transactions are returned by transsaction API */
+/* returns firstname and balance, transactions are returned by transaction API */
 exports.profile = async function(req, res, next) {
 	await User.findOne({
 		where: {
@@ -121,9 +132,9 @@ exports.profile = async function(req, res, next) {
 	
 }
 
-/* revoke session token */
+/* revoke session token by overriding it */
 exports.logout = async function(req, res, next) {
 	res.clearCookie("Session")
-	return res.json({"Session revoked": "true"})		//  Goto welcome page
+	return res.json({"Session revoked": "true"})
 }
 
