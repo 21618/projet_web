@@ -1,0 +1,7 @@
+<mat-tab-group *ngIf="displayTabs()" (selectedTabChange)="changeTab($event)" animationDuration="300ms">
+  <mat-tab label="Profile"></mat-tab>
+  <mat-tab label="Transaction"></mat-tab>
+  <mat-tab label="Logout"></mat-tab>
+</mat-tab-group>
+
+<router-outlet></router-outlet>

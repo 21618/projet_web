@@ -1,0 +1,23 @@
+<div class="center">
+	<p>Login</p>
+	<form [formGroup]="loginForm" (ngSubmit)="logIn()">
+		<p>
+			<mat-form-field appearance="fill" color="warn">
+				<input matInput type="text" formControlName="uid">
+				<mat-hint>Enter your UID</mat-hint>
+			</mat-form-field>
+		</p>
+		<p>
+			<mat-form-field appearance="fill">
+				<mat-hint>Enter your password</mat-hint>
+				<input matInput minlength="10" maxlength="20" type="text" formControlName="password" [type]="hidePass ? 'password' : 'text'">
+				<mat-icon matSuffix (click)="hidePass = !hidePass">{{hidePass ? 'Show' : 'Hide'}}</mat-icon>
+			</mat-form-field>
+		</p>
+		<button mat-raised-button color="Primary" type="submit">Sign in</button>
+	</form>
+
+	<div *ngIf="loginError !==''">{{loginError}}</div>
+	<p>No account?</p>	
+	<button mat-raised-button (click)="registerMenu()">Sign up</button>
+</div>

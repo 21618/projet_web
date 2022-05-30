@@ -1,0 +1,26 @@
+<div class="center">
+	<p>Register</p>
+	<form [formGroup]="registerForm" (ngSubmit)="register()">
+		<p>
+			<mat-form-field appearance="fill">
+				<input matInput type="text" formControlName="firstname">
+				<mat-hint>Enter your firstname</mat-hint>
+			</mat-form-field>
+		</p>
+		<p>
+			<mat-form-field appearance="fill">
+				<input matInput type="text" formControlName="password">
+				<mat-hint>Enter your password</mat-hint>
+			</mat-form-field>
+		</p>	
+		<button mat-raised-button color="Primary" type="submit">Confirm</button>
+	</form>
+
+	<div *ngIf="registerError !==''">{{registerError}}</div>
+
+	<div *ngIf="newUid !== 0">
+	Log In with the ID "{{newUid}}" and your password.
+	</div>
+
+	<button mat-raised-button color="Primary" (click)="loginMenu()">Log In</button>
+<div>

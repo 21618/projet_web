@@ -1,0 +1,34 @@
+<div class="center">
+<p>New transaction</p>
+<form [formGroup]="transactionForm" (ngSubmit)="createTransaction()">
+	<p>
+		<mat-form-field appearance="fill" color="warn">
+			<input matInput type="text" formControlName="amount">
+			<mat-hint>Amount</mat-hint>
+		</mat-form-field>
+	</p>
+	<p>
+		<mat-form-field appearance="fill">
+			<mat-hint>Destination account</mat-hint>
+			<input matInput type="text" formControlName="destinationId">
+		</mat-form-field>
+	</p>
+	<p>
+		<mat-form-field appearance="fill">
+			<mat-hint>Comment</mat-hint>
+			<input matInput type="text" formControlName="comment">
+		</mat-form-field>
+	</p>
+	
+	<p style="color:#FF0000" *ngIf="errorMessage">
+		{{ errorMessage }}
+	</p>
+	
+	<button mat-raised-button color="Primary" type="submit">Confirm</button>
+</form>
+
+<div *ngIf="transactionSubmitted">
+	<p>Your payment has been submitted.</p>
+<div>
+
+</div>

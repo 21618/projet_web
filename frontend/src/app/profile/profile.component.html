@@ -1,0 +1,39 @@
+<mat-card class="profile-card">
+	<p>Firstname : {{ firstname }}</p>
+	<p>Balance : {{ balance }}€</p>
+</mat-card>
+
+<h1>Transactions : </h1>
+
+<div *ngFor="let t of transactions">
+	<mat-card class="profile-card">
+		Amount : <p style="color: {{ t.hasSent ? '#FF0000' : '#7CFC00'}}">{{ t.hasSent ? '-' : '+' }}{{ t.amount }}€</p>
+		
+		<mat-card-actions align="end">
+			<button (click)="selectTransaction(t.id)" mat-button>View</button>
+		</mat-card-actions>
+		
+		<div *ngIf="selectedTransaction === t.id" class="transaction-details">
+			<li>Source account : {{ transactionInfo.sourceUid }}</li>
+			<li>Destination account : {{ transactionInfo.destUid }}</li>
+			<li>Amount : {{ transactionInfo.amount }}</li>
+			<li>Comment : {{ transactionInfo.comment }}</li>
+		</div>
+		
+		<button *ngIf="selectedTransaction === t.id" (click)="updateEditMenu()" mat-raised-button color="Warn" type="submit">Edit</button>
+		<button *ngIf="selectedTransaction === t.id" (click)="deleteTransaction(t.id)" mat-raised-button color="Primary" type="submit">Delete</button>
+		
+		<form *ngIf="editMode && selectedTransaction === t.id" [formGroup]="editTransactionForm" (ngSubmit)="editTransaction(t.id)">
+		Note: Only transaction comments can be edited
+			<p>
+			<mat-form-field appearance="fill">
+				<mat-hint>Comment</mat-hint>
+				<input matInput type="text" formControlName="comment">
+			</mat-form-field>
+			</p>
+			<button mat-raised-button color="Primary" type="submit">Confirm</button>
+		</form>
+	</mat-card>
+</div>
+
+
